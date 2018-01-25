@@ -23,6 +23,7 @@
         }
         </style>
 
+        <title>Referencer</title>
     </head>
 
     <body>
