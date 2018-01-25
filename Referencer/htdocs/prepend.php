@@ -23,7 +23,7 @@ if (!function_exists('version_compare') || version_compare(phpversion(), '7.0.0'
 
 spl_autoload_register(function ($class_name) {
     $class_name = $class_name . '.php';
-
+    
     if (file_exists(ROOT_PATH . '/library/core/' . $class_name)) {
         require_once ROOT_PATH . '/library/core/' . $class_name;
     } else if (file_exists(ROOT_PATH . '/library/application/' . $class_name)) {

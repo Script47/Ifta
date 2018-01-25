@@ -37,6 +37,10 @@
             <div class="form-group">
                 <div id="text" class="form-control" contenteditable="true"></div>
             </div>
+
+            <div class="form-group">
+                <div id="output" class="form-control"></div>
+            </div>
         
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -46,20 +50,27 @@
         </div>
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
         <script>
         $(document).ready(function () {
             $(document).on('click', '#get_references', function () {
                 $.post('referencer.php', {
+                    token: '$2y$10$GsDOiVzQFH5eGhzYooRlS.dEiS89R.Tzwfz3TSVrUO9JeN0xdeQQG',
                     text: $.trim($('#text').text())
                 }, function (response) {
+                    response = JSON.parse(response);
+                    
                     if (response.hasOwnProperty('error')) {
                         return false;
                     }
 
-                    $('#text').html(response.success);
+                    $('#output').html(response.success);
+
+                    $('[data-toggle="tooltip"]').tooltip({
+                        html: true
+                    });   
                 });
             });
         });
