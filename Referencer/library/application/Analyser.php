@@ -13,6 +13,8 @@ class Analyser {
     {
         $count = 0;
         $str = '';
+
+        /** Add words that you want removing to this array. **/
         $remove = ['a', 'the', 'but', 'and', 'if', 'it', 'etc', 'eg', 'e.g', 'e.g.', 'or', 'of', 'can'];
 
         $words = array_filter(explode(' ', preg_replace('#[^[:alpha:][:space:]]#', '', strtolower($string))));
