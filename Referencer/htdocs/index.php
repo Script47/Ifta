@@ -21,6 +21,19 @@
             -webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,1);
             -moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,1);            
         }
+
+        #ajax_indicator {
+            display: none;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            z-index: 9999;
+        }
         </style>
 
         <title>Referencer</title>
@@ -49,6 +62,8 @@
             </div>
         </div>
 
+        <div id="ajax_indicator" class="fa fa-spinner fa-pulse fa-3x fa-fw"></div>
+
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -56,22 +71,38 @@
         <script>
         $(document).ready(function () {
             $(document).on('click', '#get_references', function () {
-                $.post('referencer.php', {
-                    token: '$2y$10$GsDOiVzQFH5eGhzYooRlS.dEiS89R.Tzwfz3TSVrUO9JeN0xdeQQG',
-                    text: $.trim($('#text').text())
-                }, function (response) {
-                    response = JSON.parse(response);
-                    
-                    if (response.hasOwnProperty('error')) {
-                        return false;
-                    }
+                if ($.trim($('#text').text()) !== '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'referencer.php',
+                        data: {
+                            token: '$2y$10$GsDOiVzQFH5eGhzYooRlS.dEiS89R.Tzwfz3TSVrUO9JeN0xdeQQG',
+                            text: $.trim($('#text').text())                        
+                        },
 
-                    $('#output').html(response.success);
+                        beforeSend: function () {
+                            $('#ajax_indicator').fadeIn();
+                        },
 
-                    $('[data-toggle="tooltip"]').tooltip({
-                        html: true
-                    });   
-                });
+                        complete: function () {
+                            $('#ajax_indicator').fadeOut();
+                        },
+
+                        success: function (response) {
+                            response = JSON.parse(response);
+                            
+                            if (response.hasOwnProperty('error')) {
+                                return false;
+                            }
+
+                            $('#output').html(response.success);
+
+                            $('[data-toggle="tooltip"]').tooltip({
+                                html: true
+                            });                        
+                        }
+                    });                    
+                }
             });
         });
         </script>

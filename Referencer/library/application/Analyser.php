@@ -11,9 +11,14 @@ class Analyser {
      */
     public static function clean(string $string) : string
     {
-        $words = array_filter(explode(' ', preg_replace('#[^[:alpha:][:space:]]#', '', strtolower($string))));
-        $str = '';
         $count = 0;
+        $str = '';
+        $remove = ['a', 'the', 'but', 'and', 'if', 'it', 'etc', 'eg', 'e.g', 'e.g.', 'or', 'of', 'can'];
+
+        $words = array_filter(explode(' ', preg_replace('#[^[:alpha:][:space:]]#', '', strtolower($string))));
+        $words = array_values(array_filter($words, function ($val) use ($remove) {
+            return !in_array($val, $remove);
+        }));
 
         foreach ($words as $word) {
             if (count($words) - 1 === $count) {
@@ -21,7 +26,6 @@ class Analyser {
             } else {
                 $str .= Database::quote($word) . ',';
             }
-
             $count++;
         }
 
@@ -36,8 +40,9 @@ class Analyser {
         while ($keyword = $find_keywords->fetch()) {
             $string = preg_replace_callback('/' . $keyword->word . '/i', function ($m) use ($keyword) {
                 $html = '<div align=left>';
-                $html .= '<p><strong>Book:</strong> ' . $keyword->name . ' (' . $keyword->volume . ')</p>';
+                $html .= '<p><strong>Book:</strong> ' . $keyword->name . '</p>';
                 $html .= '<p><strong>Author:</strong> ' . $keyword->author . '</p>';
+                ($keyword->volume > 0) ? $html .= '<p><strong>Volume:</strong> ' . $keyword->volume . '</p>' : '';
                 $html .= '<p><strong>Language:</strong> ' . $keyword->language . '</p>';
                 $html .= '<p><strong>Page From:</strong> ' . $keyword->page_from . '</p>';
                 $html .= '<p><strong>Page To:</strong> ' . $keyword->page_to . '</p>';                
